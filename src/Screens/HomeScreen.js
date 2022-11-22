@@ -3,6 +3,7 @@ import React, { useLayoutEffect } from "react";
 import { Alert, Button, Pressable, StyleSheet, Text, View } from "react-native";
 import { firestoreServices } from "../Services/firestore-services";
 import { useNavigation } from "@react-navigation/native";
+import { Card } from "react-native-paper";
 
 const HomeScreen = () => {
   const navigation = useNavigation();
@@ -21,17 +22,30 @@ const HomeScreen = () => {
   });
 
   return (
-    <View>
-      <Text>Hola soy un screen</Text>
-
-      <Button title="Hola" onPress={() => show()}>
-        Hola
-      </Button>
+    <View style={styles.container}>
+      <Card
+        style={{
+          width: "100%",
+          height: 150,
+          alignItems: "center",
+          justifyContent: "center",
+          marginTop: 20,
+        }}
+      >
+        <Text style={{ fontSize: 20, fontWeight: "500" }}>
+          Bienvenido a SmartParking
+        </Text>
+      </Card>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: "center",
+  },
+
   toggleButton: {
     display: "flex",
     height: 40,

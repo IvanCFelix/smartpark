@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Alert,
   Pressable,
@@ -9,10 +9,36 @@ import {
   View,
 } from "react-native";
 import { FontAwesome5 } from "@expo/vector-icons";
+import { FAB, Portal, Provider } from "react-native-paper";
 
 const VehiclesList = () => {
+  const [openFab, setOpenFab] = useState(false);
+  const onStateChange = ({ openFab }) => setOpenFab({ openFab });
+
   return (
     <SafeAreaView style={styles.container}>
+      <FAB.Group
+        open={openFab}
+        visible
+        color="white"
+        fabStyle={styles.fab}
+        icon={openFab ? "car" : "plus"}
+        actions={[
+          {
+            icon: "delete",
+            label: "Eliminar",
+            style: styles.fab,
+            onPress: () => console.log("Pressed email"),
+          },
+          {
+            icon: "plus",
+            label: "Agregar",
+            style: styles.fab,
+            onPress: () => console.log("Pressed notifications"),
+          },
+        ]}
+        onStateChange={() => setOpenFab(!openFab)}
+      />
       <VehicleComponent></VehicleComponent>
     </SafeAreaView>
   );
@@ -94,6 +120,11 @@ const styles = StyleSheet.create({
     borderRadius: 40,
     alignItems: "center",
     justifyContent: "center",
+  },
+  fab: {
+    backgroundColor: "#C70039",
+
+    tintColor: "white",
   },
 });
 
