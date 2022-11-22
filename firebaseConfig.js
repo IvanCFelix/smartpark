@@ -8,15 +8,13 @@ import { initializeApp } from "firebase/app";
 // import {...} from "firebase/storage";
 
 // Initialize Firebase
-const firebaseConfig = {
-  apiKey: "api-key",
-  authDomain: "project-id.firebaseapp.com",
-  databaseURL: "https://project-id.firebaseio.com",
-  projectId: "project-id",
-  storageBucket: "project-id.appspot.com",
-  messagingSenderId: "sender-id",
-  appId: "app-id",
-  measurementId: "G-measurement-id",
+export const firebaseConfig = {
+  apiKey: "AIzaSyCX1AYANAMaXVUxpjCaYLcTS4lHC_x1LMs",
+  authDomain: "smartpark-286d6.firebaseapp.com",
+  projectId: "smartpark-286d6",
+  storageBucket: "smartpark-286d6.appspot.com",
+  messagingSenderId: "261115306083",
+  appId: "1:261115306083:web:4468db5a64aad5d9171856",
 };
 
 const app = initializeApp(firebaseConfig);

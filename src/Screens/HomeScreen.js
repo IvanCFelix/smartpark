@@ -1,8 +1,12 @@
 import Icon from "react-native-vector-icons/FontAwesome";
-import React, { useEffect, useLayoutEffect } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import React, { useLayoutEffect } from "react";
+import { Alert, Button, Pressable, StyleSheet, Text, View } from "react-native";
 
 const HomeScreen = ({ navigation }) => {
+  const show = () => {
+    return Alert.alert("Works");
+  };
+
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
@@ -20,6 +24,10 @@ const HomeScreen = ({ navigation }) => {
   return (
     <View>
       <Text>Hola soy un screen</Text>
+
+      <Button title="Hola" onPress={() => show()}>
+        Hola
+      </Button>
     </View>
   );
 };

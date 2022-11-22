@@ -1,4 +1,3 @@
-import { width } from "@mui/system";
 import { Button } from "@react-native-material/core";
 import { BarCodeScanner } from "expo-barcode-scanner";
 import React, { useContext, useEffect, useState } from "react";
