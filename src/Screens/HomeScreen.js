@@ -1,10 +1,17 @@
 import Icon from "react-native-vector-icons/FontAwesome";
 import React, { useLayoutEffect } from "react";
-import { Alert, Button, Pressable, StyleSheet, Text, View } from "react-native";
+import {
+  Alert,
+  Button,
+  Image,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import { firestoreServices } from "../Services/firestore-services";
 import { useNavigation } from "@react-navigation/native";
 import { Card } from "react-native-paper";
-
 const HomeScreen = () => {
   const navigation = useNavigation();
   useLayoutEffect(() => {
@@ -23,6 +30,10 @@ const HomeScreen = () => {
 
   return (
     <View style={styles.container}>
+      <Image
+        style={{ width: "100%", height: 200 }}
+        source={require("../../assets/parking-img.jpg")}
+      ></Image>
       <Card
         style={{
           width: "100%",

@@ -21,7 +21,7 @@ function Stack() {
       }}
     >
       <HomeStackNavigator.Screen
-        name="HomeScreen"
+        name="Inicio"
         component={HomeScreen}
       ></HomeStackNavigator.Screen>
       <HomeStackNavigator.Screen
@@ -38,7 +38,7 @@ const Tab = createBottomTabNavigator();
 function Tabs() {
   return (
     <Tab.Navigator
-      initialRouteName="Inicio"
+      initialRouteName="home"
       screenOptions={{
         tabBarActiveTintColor: "#C70039",
         headerTintColor: "white",
@@ -52,7 +52,7 @@ function Tabs() {
           ),
           headerShown: false,
         }}
-        name="Inicio"
+        name="home"
         component={Stack}
       ></Tab.Screen>
       <Tab.Screen
