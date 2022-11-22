@@ -3,11 +3,20 @@ import { BarCodeScanner } from "expo-barcode-scanner";
 import React, { useContext, useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { userContext } from "../../App";
+import * as Device from "expo-device";
 
 const QrModal = ({ navigation }) => {
   const { userInfo, setUserInfo } = useContext(userContext);
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
+
+  const onReadSuccess = () => {
+    const data = {
+      deviceName: Device.deviceName,
+      uniqDeviceId: Device.modelId,
+    };
+    console.log(data);
+  };
 
   useEffect(() => {
     const getBarCodeScannerPermissions = async () => {
@@ -19,12 +28,10 @@ const QrModal = ({ navigation }) => {
   }, []);
 
   const handleBarCodeScanned = ({ type, data }) => {
-    if (!scanned) {
+    if (scanned === false) {
       setUserInfo(data);
       setScanned(true);
-      alert(
-        `Bar code with type ${type} and data ${userInfo} has been scanned!`
-      );
+      onReadSuccess();
     }
   };
 
@@ -39,7 +46,7 @@ const QrModal = ({ navigation }) => {
     <View style={styles.container}>
       <View style={styles.barcodebox}>
         <BarCodeScanner
-          onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
+          onBarCodeScanned={scanned ? null : handleBarCodeScanned}
           style={styles.barcodescan}
         />
       </View>
@@ -47,8 +54,7 @@ const QrModal = ({ navigation }) => {
       <Button
         title={"Cancelar"}
         onPress={() => {
-          setScanned(false);
-          navigation.goBack();
+          setScanned(false), navigation.goBack();
         }}
         style={styles.btnRScan}
       />
@@ -85,7 +91,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: 40,
 
-    backgroundColor: "red",
+    backgroundColor: "#C70039",
   },
 });
 
