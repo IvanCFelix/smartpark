@@ -1,7 +1,13 @@
-import { Picker } from "@react-native-picker/picker";
-import React, { useEffect, useMemo, useState } from "react";
-import { SafeAreaView, StyleSheet, View } from "react-native";
+import React, { useState } from "react";
+import { Button, StyleSheet, Text, View } from "react-native";
 import { TextInput } from "react-native-paper";
+import ColorPicker, {
+  HueSlider,
+  OpacitySlider,
+  Panel1,
+  Preview,
+  Swatches,
+} from "reanimated-color-picker";
 
 const VehiclesForm = () => {
   const [vehicle, setVehicle] = useState({
@@ -13,7 +19,12 @@ const VehiclesForm = () => {
     type: "",
   });
 
-  const years = [];
+  const handleChange = (value, name) => {
+    setVehicle({
+      ...vehicle,
+      [name]: value,
+    });
+  };
 
   return (
     <View
@@ -27,17 +38,19 @@ const VehiclesForm = () => {
       <TextInput
         style={style.textInput}
         mode="outlined"
+        name="brand"
         label="Marca"
         value={vehicle.brand}
         selectionColor="red"
         activeOutlineColor="red"
-        onChange=""
+        onChangeText={(value) => handleChange(value, "brand")}
       ></TextInput>
       <TextInput
         style={style.textInput}
         mode="outlined"
         label="Modelo"
-        value={vehicle.brand}
+        name="model"
+        value={vehicle.model}
         selectionColor="red"
         activeOutlineColor="red"
         onChange=""
@@ -60,6 +73,19 @@ const VehiclesForm = () => {
         activeOutlineColor="red"
         onChange=""
       ></TextInput>
+
+      <View style={{ flex: 1, width: 300, height: 100 }}>
+        <Text style={{ fontSize: 18, marginLeft: 10 }}>Color:</Text>
+        <ColorPicker
+          style={{ width: "60%" }}
+          value="red"
+          onComplete={(hex) => setVehicle({ ...vehicle, color: hex })}
+        >
+          <Panel1 />
+          <HueSlider />
+        </ColorPicker>
+      </View>
+      <Button title="Agregar vehiculo"></Button>
     </View>
   );
 };
