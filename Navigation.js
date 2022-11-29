@@ -8,6 +8,7 @@ import VehiclesList from "./src/Screens/Vehicles/Vehicles-list";
 import { Entypo } from "@expo/vector-icons";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import QrModal from "./src/Components/QrModal";
+import VehiclesForm from "./src/Screens/Vehicles/Vehicles-form";
 
 const HomeStackNavigator = createNativeStackNavigator();
 
@@ -25,10 +26,16 @@ function Stack() {
         component={HomeScreen}
       ></HomeStackNavigator.Screen>
       <HomeStackNavigator.Screen
-        name="QrModal"
-        component={QrModal}
-        options={{ headerShown: false }}
+        name="VehiclesForm"
+        component={VehiclesForm}
       ></HomeStackNavigator.Screen>
+      <HomeStackNavigator.Group screenOptions={{ presentation: "modal" }}>
+        <HomeStackNavigator.Screen
+          name="QrModal"
+          component={QrModal}
+          options={{ headerShown: false }}
+        ></HomeStackNavigator.Screen>
+      </HomeStackNavigator.Group>
     </HomeStackNavigator.Navigator>
   );
 }
