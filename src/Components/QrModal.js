@@ -4,21 +4,19 @@ import React, { useContext, useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { userContext } from "../../App";
 import * as Device from "expo-device";
+import { Buffer } from "buffer";
+import { getDatabase, onValue, ref, set } from "firebase/database";
+import { firebaseAPP } from "../../firebaseConfig";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const QrModal = ({ navigation }) => {
+  const database = getDatabase(firebaseAPP);
   const { userInfo, setUserInfo } = useContext(userContext);
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
 
-  const onReadSuccess = () => {
-    const data = {
-      deviceName: Device.deviceName,
-      uniqDeviceId: Device.modelId,
-    };
-    console.log(data);
-  };
-
   useEffect(() => {
+    setScanned(false);
     const getBarCodeScannerPermissions = async () => {
       const { status } = await BarCodeScanner.requestPermissionsAsync();
       setHasPermission(status === "granted");
@@ -27,12 +25,35 @@ const QrModal = ({ navigation }) => {
     getBarCodeScannerPermissions();
   }, []);
 
-  const handleBarCodeScanned = ({ type, data }) => {
+  const handleBarCodeScanned = async ({ data }) => {
+    let activeSesion = await AsyncStorage.getItem("session");
+
+    await AsyncStorage.setItem(
+      "session",
+      JSON.stringify({ metodo: "Entrada", url: data })
+    );
+    activeSesion = await AsyncStorage.getItem("session");
+
+    updateParkingStatus(activeSesion);
     if (scanned === false) {
       setUserInfo(data);
       setScanned(true);
-      onReadSuccess();
     }
+  };
+
+  const updateParkingStatus = (session) => {
+    const sessionJSON = JSON.parse(session);
+
+    const parkinsRef = ref(database, `${sessionJSON.url}`);
+    onValue(parkinsRef, (snapshot) => {
+      const parkinData = snapshot.val();
+      if (sessionJSON.metodo === "Entrada") {
+        set(ref(database, sessionJSON.url), {
+          ...parkinData,
+          scanned: true,
+        });
+      }
+    });
   };
 
   if (hasPermission === null) {

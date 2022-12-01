@@ -1,5 +1,5 @@
 import Icon from "react-native-vector-icons/FontAwesome";
-import React, { useLayoutEffect } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import {
   Alert,
   Button,
@@ -9,11 +9,12 @@ import {
   Text,
   View,
 } from "react-native";
-import { firestoreServices } from "../Services/firestore-services";
 import { useNavigation } from "@react-navigation/native";
 import { Card } from "react-native-paper";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 const HomeScreen = () => {
   const navigation = useNavigation();
+  const [session, setSession] = useState(null);
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
@@ -27,6 +28,12 @@ const HomeScreen = () => {
       ),
     });
   });
+
+  useEffect(async () => {
+    const data = await AsyncStorage.getItem("session");
+    setSession(JSON.parse(data));
+    console.log(session);
+  }, []);
 
   return (
     <View style={styles.container}>
