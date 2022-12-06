@@ -27,7 +27,6 @@ const QrModal = ({ navigation }) => {
 
   const handleBarCodeScanned = async ({ data }) => {
     const session = await AsyncStorage.getItem("session");
-    console.log(session);
     if (session) {
       navigation.goBack();
       Alert.alert("Ya hay una sesion ");
@@ -37,7 +36,7 @@ const QrModal = ({ navigation }) => {
       const docData = (await getDoc(parkRef)).data();
       AsyncStorage.setItem("session", JSON.stringify(docData));
       AsyncStorage.setItem("parkinID", data);
-
+      console.log("uid", data);
       updateParkingStatus(parkRef, docData);
       navigation.goBack();
 
