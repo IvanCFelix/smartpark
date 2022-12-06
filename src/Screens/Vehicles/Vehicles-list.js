@@ -1,8 +1,11 @@
 import { useNavigation } from "@react-navigation/native";
+import { collection, getDocs, getFirestore, query } from "firebase/firestore";
 import React, { createContext, useContext, useState } from "react";
+import { useEffect } from "react";
 import { SafeAreaView, StyleSheet } from "react-native";
 import { FAB } from "react-native-paper";
 import VehicleComponent from "../../Components/Vehicle-component";
+import { firestoreServices } from "../../Services/firestore-services";
 
 // Context of delete methods
 export const deleteContext = createContext(initialDelete);
@@ -11,6 +14,17 @@ const initialDelete = false;
 const VehiclesList = ({ navigation }) => {
   const [openFab, setOpenFab] = useState(false);
   const [deleteOption, setDeleteOption] = useState(initialDelete);
+
+  const [vehicles, setVehicles] = useState([]);
+
+  useEffect(() => {
+    const getVehicles = async () => {
+      const vehicleList = await firestoreServices.getCollection("vehicles");
+      setVehicles(vehicleList);
+      console.log(vehicleList);
+    };
+    getVehicles();
+  }, []);
 
   return (
     <deleteContext.Provider value={{ deleteOption, setDeleteOption }}>
@@ -39,7 +53,9 @@ const VehiclesList = ({ navigation }) => {
           ]}
           onStateChange={() => setOpenFab(!openFab)}
         />
-        <VehicleComponent></VehicleComponent>
+        {vehicles.map((vehicle) => {
+          return <VehicleComponent vehicle={vehicle}></VehicleComponent>;
+        })}
       </SafeAreaView>
     </deleteContext.Provider>
   );

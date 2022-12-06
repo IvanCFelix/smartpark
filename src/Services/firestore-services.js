@@ -1,4 +1,11 @@
-import { collection, addDoc, getDoc, doc } from "firebase/firestore";
+import {
+  collection,
+  addDoc,
+  getDoc,
+  doc,
+  query,
+  getDocs,
+} from "firebase/firestore";
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import { firebaseConfig } from "../../firebaseConfig";
@@ -20,5 +27,20 @@ export const firestoreServices = {
   async getReferenceById(reference, dbCollection) {
     const docRef = doc(db, dbCollection, reference);
     return docRef;
+  },
+
+  async getCollection(dbCollection) {
+    const list = [];
+    try {
+      const q = query(collection(db, dbCollection));
+
+      const querySnapshot = await getDocs(q);
+      querySnapshot.forEach((doc) => {
+        list.push(doc.data());
+      });
+      return list;
+    } catch (e) {
+      console.error("Error adding document: ", e);
+    }
   },
 };

@@ -1,13 +1,14 @@
 import { Button } from "@react-native-material/core";
 import { BarCodeScanner } from "expo-barcode-scanner";
 import React, { useContext, useEffect, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Alert, StyleSheet, Text, View } from "react-native";
 import { userContext } from "../../App";
-import * as Device from "expo-device";
-import { Buffer } from "buffer";
-import { getDatabase, onValue, ref, set } from "firebase/database";
+
+import { getDatabase, onValue, ref, set, update } from "firebase/database";
 import { firebaseAPP } from "../../firebaseConfig";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { firestoreServices } from "../Services/firestore-services";
+import { getDoc, updateDoc } from "firebase/firestore";
 
 const QrModal = ({ navigation }) => {
   const database = getDatabase(firebaseAPP);
@@ -16,7 +17,6 @@ const QrModal = ({ navigation }) => {
   const [scanned, setScanned] = useState(false);
 
   useEffect(() => {
-    setScanned(false);
     const getBarCodeScannerPermissions = async () => {
       const { status } = await BarCodeScanner.requestPermissionsAsync();
       setHasPermission(status === "granted");
@@ -26,34 +26,42 @@ const QrModal = ({ navigation }) => {
   }, []);
 
   const handleBarCodeScanned = async ({ data }) => {
-    let activeSesion = await AsyncStorage.getItem("session");
-
-    await AsyncStorage.setItem(
-      "session",
-      JSON.stringify({ metodo: "Entrada", url: data })
-    );
-    activeSesion = await AsyncStorage.getItem("session");
-
-    updateParkingStatus(activeSesion);
-    if (scanned === false) {
-      setUserInfo(data);
+    const session = await AsyncStorage.getItem("session");
+    console.log(session);
+    if (session) {
+      navigation.goBack();
+      Alert.alert("Ya hay una sesion ");
+    } else {
       setScanned(true);
+      const parkRef = await firestoreServices.getReferenceById(data, "parkins");
+      const docData = (await getDoc(parkRef)).data();
+      AsyncStorage.setItem("session", JSON.stringify(docData));
+
+      updateParkingStatus(parkRef, docData);
+      navigation.goBack();
+
+      Alert.alert(
+        "Puedes ingresar:",
+        `Lote: ${docData.lote} espacio: ${docData.space}`
+      );
     }
   };
 
-  const updateParkingStatus = (session) => {
-    const sessionJSON = JSON.parse(session);
-
-    const parkinsRef = ref(database, `${sessionJSON.url}`);
-    onValue(parkinsRef, (snapshot) => {
-      const parkinData = snapshot.val();
-      if (sessionJSON.metodo === "Entrada") {
-        set(ref(database, sessionJSON.url), {
-          ...parkinData,
-          scanned: true,
-        });
-      }
-    });
+  const updateParkingStatus = async (reference, data) => {
+    const payload = {
+      isPaid: false,
+      isBusy: true,
+      actualVehicle: "HTTz2YCk7rugye2PZQ2L",
+      timeArrive: new Date().toLocaleTimeString(),
+    };
+    await updateDoc(reference, payload);
+    const updates = {};
+    updates[data.path] = {
+      isOwned: true,
+      isPaid: false,
+      timeArrive: new Date().toLocaleTimeString(),
+    };
+    update(ref(database), updates);
   };
 
   if (hasPermission === null) {
@@ -67,7 +75,7 @@ const QrModal = ({ navigation }) => {
     <View style={styles.container}>
       <View style={styles.barcodebox}>
         <BarCodeScanner
-          onBarCodeScanned={scanned ? null : handleBarCodeScanned}
+          onBarCodeScanned={!scanned && handleBarCodeScanned}
           style={styles.barcodescan}
         />
       </View>

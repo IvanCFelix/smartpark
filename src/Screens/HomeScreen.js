@@ -29,12 +29,6 @@ const HomeScreen = () => {
     });
   });
 
-  useEffect(async () => {
-    const data = await AsyncStorage.getItem("session");
-    setSession(JSON.parse(data));
-    console.log(session);
-  }, []);
-
   return (
     <View style={styles.container}>
       <Image

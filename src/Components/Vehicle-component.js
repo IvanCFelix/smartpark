@@ -52,10 +52,14 @@ const VehicleComponent = ({ vehicle }) => {
         <FontAwesome5 name="car-side" size={55} color="white" />
       </View>
       <View style={{ width: "auto", height: "100%", flexDirection: "column" }}>
-        <Text style={{ fontSize: 18, fontWeight: "500" }}>Mazda Mazda3</Text>
-        <Text style={{ fontSize: 12, fontWeight: "500" }}>Año: 2010</Text>
+        <Text
+          style={{ fontSize: 18, fontWeight: "500" }}
+        >{`${vehicle.company} ${vehicle.model}`}</Text>
         <Text style={{ fontSize: 12, fontWeight: "500" }}>
-          Placas: VGR-102-HJ
+          Año: {vehicle.year}
+        </Text>
+        <Text style={{ fontSize: 12, fontWeight: "500" }}>
+          Placas: {vehicle.plates}
         </Text>
       </View>
       <View

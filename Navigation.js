@@ -9,6 +9,8 @@ import { Entypo } from "@expo/vector-icons";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import QrModal from "./src/Components/QrModal";
 import VehiclesForm from "./src/Screens/Vehicles/Vehicles-form";
+import Payment from "./src/Screens/Payment";
+import { MaterialIcons } from "@expo/vector-icons";
 
 const HomeStackNavigator = createNativeStackNavigator();
 
@@ -68,6 +70,15 @@ function Tabs() {
         options={{
           tabBarIcon: ({ color }) => (
             <Entypo name="list" size={24} color={color} />
+          ),
+        }}
+      ></Tab.Screen>
+      <Tab.Screen
+        name="Mis Pagos"
+        component={Payment}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <MaterialIcons name="payments" size={24} color="black" />
           ),
         }}
       ></Tab.Screen>
