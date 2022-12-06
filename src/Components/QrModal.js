@@ -36,6 +36,7 @@ const QrModal = ({ navigation }) => {
       const parkRef = await firestoreServices.getReferenceById(data, "parkins");
       const docData = (await getDoc(parkRef)).data();
       AsyncStorage.setItem("session", JSON.stringify(docData));
+      AsyncStorage.setItem("parkinID", data);
 
       updateParkingStatus(parkRef, docData);
       navigation.goBack();

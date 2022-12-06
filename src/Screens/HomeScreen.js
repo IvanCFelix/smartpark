@@ -11,10 +11,14 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Card } from "react-native-paper";
+import { getDatabase, onValue, ref } from "firebase/database";
+import { firebaseAPP } from "../../firebaseConfig";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+
 const HomeScreen = () => {
   const navigation = useNavigation();
-  const [session, setSession] = useState(null);
+  const database = getDatabase(firebaseAPP);
+  const [sesion, setSesion] = useState(null);
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
@@ -28,6 +32,25 @@ const HomeScreen = () => {
       ),
     });
   });
+
+  useEffect(() => {
+    getSesion();
+    if (sesion) {
+      const parkinsRef = ref(database, sesion.path);
+      onValue(parkinsRef, (snapshot) => {
+        const data = snapshot.val();
+        if (data.isPaid === false && !data.isBusy) {
+          Alert.alert("Su vehiculo a salido de su espacio");
+        }
+      });
+    }
+  }, []);
+
+  const getSesion = async () => {
+    const data = await AsyncStorage.getItem("session");
+    setSesion(JSON.parse(data));
+    console.log(sesion);
+  };
 
   return (
     <View style={styles.container}>
