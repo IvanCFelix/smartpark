@@ -27,17 +27,34 @@ const QrModal = ({ navigation }) => {
 
   const handleBarCodeScanned = async ({ data }) => {
     const session = await AsyncStorage.getItem("session");
+    const id = await AsyncStorage.getItem("parkinID");
     if (session) {
       navigation.goBack();
       Alert.alert("Ya hay una sesion ");
+    } else if (id) {
+      setScanned(true);
+      const parkRef = await firestoreServices.getReferenceById(id, "parkins");
+      const payload = {
+        isPaid: true,
+        isBusy: false,
+        actualVehicle: "",
+        timeArrive: "null",
+      };
+      await updateDoc(parkRef, payload);
+      AsyncStorage.clear();
+      Alert.alert("Ya puedes salir");
+      setScanned(false);
+      navigation.goBack();
     } else {
       setScanned(true);
       const parkRef = await firestoreServices.getReferenceById(data, "parkins");
       const docData = (await getDoc(parkRef)).data();
-      AsyncStorage.setItem("session", JSON.stringify(docData));
+      await updateParkingStatus(parkRef, docData);
+      const dataUpdated = (await getDoc(parkRef)).data();
+
+      AsyncStorage.setItem("session", JSON.stringify(dataUpdated));
       AsyncStorage.setItem("parkinID", data);
-      console.log("uid", data);
-      updateParkingStatus(parkRef, docData);
+
       navigation.goBack();
 
       Alert.alert(
@@ -56,11 +73,10 @@ const QrModal = ({ navigation }) => {
     };
     await updateDoc(reference, payload);
     const updates = {};
-    updates[data.path] = {
-      isOwned: true,
-      isPaid: false,
-      timeArrive: new Date().toLocaleTimeString(),
-    };
+    updates[data.path + "/isPaid"] = true;
+    updates[data.path + "/isOwned"] = false;
+    updates[data.path + "/timeArrive"] = "null";
+    update(ref(database), updates);
     update(ref(database), updates);
   };
 

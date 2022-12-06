@@ -35,9 +35,9 @@ const Payment = () => {
   const getAsyncStorage = async () => {
     const session = await AsyncStorage.getItem("session");
     const uidParking = await AsyncStorage.getItem("parkingID");
+
     setUid(uidParking);
     setSession(JSON.parse(session));
-    console.log(uidParking);
   };
 
   const paying = async () => {
@@ -47,6 +47,7 @@ const Payment = () => {
     updates[sesion.path + "/timeArrive"] = "null";
     update(ref(database), updates);
     Alert.alert("Pagado");
+    AsyncStorage.removeItem("session");
     setSession(null);
   };
 
@@ -85,7 +86,7 @@ const Payment = () => {
             </Pressable>
           </View>
         ) : (
-          <Text style={{ fontSize: 20, marginTop: 50 }}>
+          <Text style={{ fontSize: 20, marginTop: 50, textAlign: "center" }}>
             No hay pagos pendientes
           </Text>
         )}
